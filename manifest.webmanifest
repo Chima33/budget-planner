@@ -1,0 +1,15 @@
+{
+  "name": "Budget Planner",
+  "short_name": "Budget",
+  "description": "Track monthly inflow, outflow and long-term trends. Syncs across devices.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EDF3EB",
+  "theme_color": "#0E2B22",
+  "icons": [
+    { "src": "./icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "./icons/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

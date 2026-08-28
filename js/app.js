@@ -35,6 +35,7 @@ function shiftMonth(d) {
 }
 
 let mType = 'out';
+let editingId = null;
 let mCat = CATS.out[0].id;
 
 function buildChips() {
@@ -76,6 +77,7 @@ function openModal() {
 function closeModal() {
   const modal = $('#txModal');
   if (modal) modal.classList.remove('open');
+    editingId = null;
 }
 
 function bindUI() {
@@ -134,17 +136,25 @@ function bindUI() {
         return;
       }
       const date = dateInput.value || iso(new Date());
-      const tx = {
-        id: 'tx' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        type: mType,
-        cat: mCat,
-        amount: Math.round(amt * 100) / 100,
-        note: noteInput.value.trim(),
-        date
-      };
-
-      state.TX.push(tx);
-      await cloudSaveTx(tx);
+            if (editingId) {
+        // UPDATE existing transaction
+        const i = state.TX.findIndex(tx => tx.id === editingId);
+        if (i > -1) {
+          state.TX[i] = { ...state.TX[i], type: mType, cat: mCat, amount: Math.round(amt * 100) / 100, note: noteInput.value.trim(), date };
+          await cloudSaveTx(state.TX[i]); // Supabase upsert will update it
+          toast(`Updated ${fmt2(amt)}`);
+        }
+        editingId = null;
+      } else {
+        // ADD new transaction (original logic)
+        const tx = { 
+          id: 'tx' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), 
+          type: mType, cat: mCat, amount: Math.round(amt * 100) / 100, note: noteInput.value.trim(), date 
+        };
+        state.TX.push(tx);
+        await cloudSaveTx(tx);
+        toast(`Added ${fmt2(amt)}`);
+      }
       closeModal();
 
       const d = fromISO(date);
@@ -161,6 +171,23 @@ function bindUI() {
   }
 
   document.addEventListener('click', e => {
+    const edit = e.target.closest('[data-edit]');
+    if (edit) {
+      const id = edit.dataset.edit;
+      const t = state.TX.find(tx => tx.id === id);
+      if (t) {
+        editingId = id;
+        setType(t.type); // Sets inflow/outflow and rebuilds chips
+        mCat = t.cat; buildChips(); // Selects the right category
+        $('#amtInput').value = t.amount;
+        $('#noteInput').value = t.note || '';
+        $('#dateInput').value = t.date;
+        $('#submitTx').textContent = 'Update transaction';
+        $('#txModal').classList.add('open');
+        setTimeout(() => $('#amtInput').focus(), 250);
+      }
+      return;
+    }
     const del = e.target.closest('[data-del]');
     if (del) {
       const id = del.dataset.del;

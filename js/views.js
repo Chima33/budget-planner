@@ -98,6 +98,11 @@ export function renderTransactions() {
 
   console.log(`✅ Generated HTML for ${filteredRows.length} transactions`);
   list.innerHTML = html;
+  console.log(`✅ Generated HTML for ${filteredRows.length} transactions`);
+     list.innerHTML = html;
+     
+     // ADD THIS LINE TO FORCE THE CARD TO BE VISIBLE:
+     list.closest('.card').classList.add('in');
 }
 
 export function renderOverview() {

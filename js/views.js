@@ -90,6 +90,7 @@ export function renderTransactions() {
       <div class="cat-ico" style="background:color-mix(in srgb,${c.color} 16%,#fff)">${c.emoji}</div>
       <div class="meta"><b>${esc(t.note || c.name)}</b><small>${c.name}</small></div>
       <span class="amt ${t.type === 'in' ? 'pos' : 'neg'}">${t.type === 'in' ? '+' : '−'}${fmt2(t.amount)}</span>
+      <button class="edit" data-edit="${t.id}" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
       <button class="del" data-del="${t.id}" title="Delete">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0 1 13h8l1-13"/></svg>
       </button>
